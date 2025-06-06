@@ -1,0 +1,74 @@
+{
+  "name": "@tsmono/mytslib",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "nx": {
+    "targets": {
+      "build-all": {
+        "executor": "nx:run-commands",
+        "dependsOn": [
+          "build-write",
+          "build-esbuild"
+        ],
+        "cache": true,
+        "outputs": [
+          "{projectRoot}/dist"
+        ],
+        "options": {
+          "parallel": false,
+          "commands": [
+            "mkdir -p packages/mytslib/dist",
+            "cp -r dist/packages/mytslib/out-write/* packages/mytslib/dist",
+            "cp -r dist/packages/mytslib/out-esbuild/* packages/mytslib/dist"
+          ]
+        }
+      },
+      "build-write": {
+        "executor": "nx:run-commands",
+        "cache": true,
+        "outputs": [
+          "{workspaceRoot}/dist/packages/mytslib/out-write/"
+        ],
+        "options": {
+          "parallel": false,
+          "commands": [
+            "mkdir -p dist/packages/mytslib/out-write/",
+            "touch dist/packages/mytslib/out-write/write.log",
+            "echo 'hello world' > dist/packages/mytslib/out-write/write.log"
+          ]
+        }
+      },
+      "build-esbuild": {
+        "executor": "@nx/esbuild:esbuild",
+        "cache": true,
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "{workspaceRoot}/dist/packages/mytslib/out-esbuild",
+          "main": "{projectRoot}/src/index.ts",
+          "declaration": true,
+          "declarationRootDir": "{projectRoot}/src",
+          "tsConfig": "{projectRoot}/tsconfig.lib.json",
+          "format": [
+            "esm"
+          ]
+        }
+      }
+    }
+  },
+  "dependencies": {}
+}
