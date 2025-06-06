@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "rootDir": "src",
-    "outDir": "bowidl",
+    "outDir": "../../dist/packages/mytslib/out-tsc/",
     "tsBuildInfoFile": "../../dist/packages/mytslib/out-tsc/tsconfig.lib.tsbuildinfo",
     "emitDeclarationOnly": true,
     "forceConsistentCasingInFileNames": true,

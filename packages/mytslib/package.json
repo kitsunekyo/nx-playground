@@ -17,37 +17,41 @@
   },
   "nx": {
     "targets": {
-      "build-all": {
+      "build": {
         "executor": "nx:run-commands",
         "dependsOn": [
+          "typecheck",
           "build-write",
           "build-esbuild"
         ],
         "cache": true,
+        "inputs": [
+          "{workspaceRoot}/dist/{projectRoot}"
+        ],
         "outputs": [
           "{projectRoot}/dist"
         ],
         "options": {
-          "parallel": false,
           "commands": [
-            "mkdir -p packages/mytslib/dist",
-            "cp -r dist/packages/mytslib/out-write/* packages/mytslib/dist",
-            "cp -r dist/packages/mytslib/out-esbuild/* packages/mytslib/dist"
-          ]
+            "rm -rf {projectRoot}/dist",
+            "mkdir -p {projectRoot}/dist",
+            "cp -r dist/{projectRoot}/out-{write,tsc,esbuild}/* {projectRoot}/dist"
+          ],
+          "parallel": false
         }
       },
       "build-write": {
         "executor": "nx:run-commands",
         "cache": true,
         "outputs": [
-          "{workspaceRoot}/dist/packages/mytslib/out-write/"
+          "{workspaceRoot}/dist/{projectRoot}/out-write"
         ],
         "options": {
           "parallel": false,
           "commands": [
-            "mkdir -p dist/packages/mytslib/out-write/",
-            "touch dist/packages/mytslib/out-write/write.log",
-            "echo 'hello world' > dist/packages/mytslib/out-write/write.log"
+            "mkdir -p dist/{projectRoot}/out-write/",
+            "touch dist/{projectRoot}/out-write/write.log",
+            "echo 'hello world' > dist/{projectRoot}/out-write/write.log"
           ]
         }
       },
@@ -58,9 +62,9 @@
           "{options.outputPath}"
         ],
         "options": {
-          "outputPath": "{workspaceRoot}/dist/packages/mytslib/out-esbuild",
+          "outputPath": "{workspaceRoot}/dist/{projectRoot}/out-esbuild",
           "main": "{projectRoot}/src/index.ts",
-          "declaration": true,
+          "declaration": false,
           "declarationRootDir": "{projectRoot}/src",
           "tsConfig": "{projectRoot}/tsconfig.lib.json",
           "format": [
